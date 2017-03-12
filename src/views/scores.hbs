@@ -1,0 +1,60 @@
+<script src="/js/sorttable.js"></script>
+
+<h1>{{game}}</h1>
+
+<table class="sortable table">
+    <thead>
+        <tr>
+            <th>Player</th>
+            <th>Wins</th>
+            <th>Games</th>
+            <th>Ratio</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {{#scores}}
+        <tr>
+            <td class="player-name">{{name}}</td>
+            <td>{{won}}</td>
+            <td>{{played}}</td>
+            <td>{{ratio}}</td>
+        </tr>
+        {{/scores}}
+    </tbody>
+</table>
+
+<div class="update-scores">
+    <hr>
+    <div class="alert alert-danger update-error" role="alert"></div>
+    <table class="update-scores-table table">
+        <thead>
+        <tr>
+            <th>Player</th>
+            <th>Played</th>
+            <th>Won</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {{#scores}}
+            <tr>
+                <td class="player-name">{{name}}</td>
+                <td>
+                    <input type="checkbox" name="played">
+                </td>
+                <td>
+                    <input type="radio" name="won">
+                </td>
+            </tr>
+        {{/scores}}
+        </tbody>
+    </table>
+</div>
+
+{{#if loggedIn}}
+    <div class="button-container">
+        <a id="update-scores-button" href="#" class="btn btn-primary">Update</a>
+        <a id="submit-scores-button" href="#" class="btn btn-primary">Save</a>
+    </div>
+{{/if}}

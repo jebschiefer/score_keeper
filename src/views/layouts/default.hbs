@@ -1,0 +1,46 @@
+<html>
+    <head>
+        <title>schiefer.io</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/styles.css">
+
+        <script>
+            window.Tether = function() {
+                console.log("Bootstrap may actually need Tether.");
+            };
+        </script>
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
+        <script src="/js/script.js"></script>
+    </head>
+
+    <nav class="navbar navbar-toggleable navbar-light bg-faded">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="/">schiefer.io</a>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link active" href="/login">Log in</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        {{#if error}}
+            <div class="alert alert-danger" role="alert">
+                <strong>Oh snap!</strong> {{error}}
+            </div>
+        {{/if}}
+
+        {{#if success}}
+            <div class="alert alert-success" role="alert">
+                <strong>Huzzah!</strong> {{success}}
+            </div>
+        {{/if}}
+
+        {{{body}}}
+    </div>
+</html>

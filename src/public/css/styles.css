@@ -1,0 +1,23 @@
+html {
+    font-family: sans-serif;
+}
+
+.container {
+    padding-top: 1rem;
+}
+
+.player-name {
+    text-transform: capitalize;
+}
+
+#submit-scores-button,
+.update-scores,
+.update-error {
+    display: none;
+}
+
+.button-container {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    text-align: center;
+}
