@@ -19,7 +19,7 @@ Web app for keeping track of game scores.
 - Checkout code
 - Install dependencies: `npm install`
 - Create `<project_root>/config/firebase.json` with credentials
-- Create `<project_root>.env` (example below)
+- Create `<project_root>/.env` (example below)
 - Start app: `npm start`
 - Open http://localhost:8080
 
