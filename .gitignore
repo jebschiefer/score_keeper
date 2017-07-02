@@ -1,5 +1,6 @@
 .DS_Store
 .env
+*.log
 config/
 dist/
 node_modules/
