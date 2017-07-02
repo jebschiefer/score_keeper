@@ -2,6 +2,10 @@
   "name": "score_keeper",
   "version": "1.0.0",
   "description": "Score keeping site for various games",
+  "repository": {
+    "type" : "git",
+    "url": "https://github.com/jebschiefer/score_keeper.git"
+  },
   "main": "index.js",
   "scripts": {
     "build": "npm run clean && npm run compile && npm run copy-files",
