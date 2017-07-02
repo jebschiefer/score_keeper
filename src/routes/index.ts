@@ -1,8 +1,7 @@
 import * as express from "express";
 
-import { Database } from "../database";
 import { Auth } from "../util/auth";
-import { logger, logRoute } from "../util/logger";
+import { logRoute } from "../util/logger";
 
 import { HomeRouter } from "./home";
 import { ScoresRouter } from "./scores";
