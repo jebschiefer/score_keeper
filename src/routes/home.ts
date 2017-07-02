@@ -1,4 +1,4 @@
-import {Request, Response } from "express";
+import { Request, Response } from "express";
 
 import { Game } from "../models";
 import { Database } from "../database";

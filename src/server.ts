@@ -60,7 +60,7 @@ export class Server {
     }
 
     private listen(): void {
-        const port: number = process.env.PORT || 8080;
+        const port: number|string = process.env.PORT || 8080;
 
         this.app.listen(port, () => {
             logger.info(`Server running on port ${port}`);
