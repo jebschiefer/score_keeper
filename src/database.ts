@@ -1,25 +1,14 @@
 import * as dotenv from "dotenv";
 import * as firebase from "firebase-admin";
 
+import { FirebaseAdmin } from "./firebase";
 import { Game, Score } from "./models";
 import { logger } from "./util/logger";
 
-const serviceAccount = require("../config/firebase.json");
-
 dotenv.config();
 
-const config = {
-    credential: firebase.credential.cert(serviceAccount),
-    databaseURL: process.env.DATABASE
-};
-
 export class Database {
-    private static db: firebase.database.Database;
-
-    public static init(): void {
-        firebase.initializeApp(config);
-        this.db = firebase.database();
-    }
+    private static db: firebase.database.Database = FirebaseAdmin.database;
 
     public static getGame(id: string): Promise<Game> {
         return new Promise((resolve: Function, reject: Function) => {

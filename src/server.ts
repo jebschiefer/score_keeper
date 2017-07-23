@@ -4,9 +4,9 @@ import * as hbs from "express-hbs";
 import * as session from "express-session";
 import * as favicon from "serve-favicon";
 import * as serveStatic from "serve-static";
+import * as passport from "passport";
 import * as path from "path";
 
-import { Database } from "./database";
 import { Routes } from "./routes";
 import { logger } from "./util/logger";
 
@@ -16,7 +16,6 @@ export class Server {
 
     constructor() {
         this.app = express();
-        Database.init();
 
         this.configure();
         this.listen();
@@ -54,6 +53,7 @@ export class Server {
 
         this.app.use(favicon(path.join(__dirname, "/public/img", "favicon.ico")));
         this.app.use(serveStatic(path.join(__dirname, "/public")));
+        this.app.use(passport.initialize());
 
         const routes = new Routes(express.Router());
         this.app.use(routes.getRouter());
