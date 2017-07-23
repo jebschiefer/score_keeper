@@ -15,7 +15,7 @@ export class LoginRouter {
         
         AuthService.login(username, password)
             .then(data => {
-                req.session.loggedIn = true;
+                req.session.jwt = data.token;
                 return res.redirect("/");
             })
             .catch(err => {

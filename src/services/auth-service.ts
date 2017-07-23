@@ -11,9 +11,22 @@ dotenv.config();
 const secret = process.env.SECRET;
 const algorithm = "HS256";
 
+const sessionExtractor = (req) => {
+    let token = null;
+
+    if (req && req.session) {
+        token = req.session['jwt'];
+    }
+
+    return token;
+};
+
 const options = {
     secretOrKey: secret,
-    jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("Bearer"),
+    jwtFromRequest: ExtractJwt.fromExtractors([
+        ExtractJwt.fromAuthHeaderWithScheme("Bearer"),
+        sessionExtractor
+    ]),
     algorithms: [algorithm]
 };
 
@@ -60,11 +73,11 @@ export class AuthService {
     }
 
     public static loggedIn(req: Request, res: Response, next: NextFunction): void {
-        req["loggedIn"] = req.session && req.session["loggedIn"];
+        req["loggedIn"] = req.session && req.session["jwt"];
         next();
     }
 
-    public static login(username, password): Promise<object> {
+    public static login(username, password): Promise<any> {
         if (!username || !password) {
             const error = new Error("Username and password required.");
             error["status"] = 400;
@@ -90,6 +103,6 @@ export class AuthService {
                 return { token };
             });
         
-        return promise as Promise<object>;
+        return promise as Promise<any>;
     }
 }

@@ -54,6 +54,7 @@ export class Server {
         this.app.use(favicon(path.join(__dirname, "/public/img", "favicon.ico")));
         this.app.use(serveStatic(path.join(__dirname, "/public")));
         this.app.use(passport.initialize());
+        this.app.use(passport.session());
 
         const routes = new Routes(express.Router());
         this.app.use(routes.getRouter());
