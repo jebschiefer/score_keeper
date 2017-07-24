@@ -10,21 +10,21 @@ export class LoginRouter {
                 isLogin: true
             };
 
-            res.render("login", data);
+            res.render("login-signup", data);
         }
     }
 
     public static post(req, res): void {
         const username: string = req.body.username;
         const password: string = req.body.password;
-        
+
         AuthService.login(username, password)
             .then(data => {
                 req.session.jwt = data.token;
                 return res.redirect("/");
             })
             .catch(err => {
-                return res.render("login", { error: "Incorrect credentials." });
+                return res.render("login-signup", { error: "Incorrect credentials." });
             });
     }
 
