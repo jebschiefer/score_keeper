@@ -2,7 +2,7 @@ import { AuthService } from "../services";
 
 export class SignupRouter {
     public static get(req, res): void {
-        if (req.session && req.session.loggedIn) {
+        if (req["user"]) {
             res.redirect("/");
         } else {
             const data = {

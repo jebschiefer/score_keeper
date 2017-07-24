@@ -13,27 +13,6 @@ const algorithm = "HS256";
 
 export class AuthService {
 
-    public static authError(req, res, err?) {
-        let message = "Authentication required";
-        let status = 401;
-
-        if (err) {
-            message = err.message;
-            status = err.status || status;
-        }
-
-        if (req.xhr || req.path.includes("/api/")) {
-            return res.status(status).json({ message });
-        } else {
-            return res.redirect("/");
-        }
-    }
-
-    public static loggedIn(req: Request, res: Response, next: NextFunction): void {
-        req["loggedIn"] = req.session && req.session["jwt"];
-        next();
-    }
-
     public static checkToken(req: Request, res: Response, next: NextFunction) {
         let token;
 
@@ -122,6 +101,22 @@ export class AuthService {
         });
 
         return promise;
+    }
+
+    private static authError(req, res, err?) {
+        let message = "Authentication required";
+        let status = 401;
+
+        if (err) {
+            message = err.message;
+            status = err.status || status;
+        }
+
+        if (req.xhr || req.path.includes("/api/")) {
+            return res.status(status).json({ message });
+        } else {
+            return res.redirect("/");
+        }
     }
 
     private static createToken(user: User): string {

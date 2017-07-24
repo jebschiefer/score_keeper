@@ -15,7 +15,6 @@ export class Routes {
 
     public initRoutes() {
         this.router.all("*", logRoute);
-        this.router.all("*", AuthService.loggedIn);
         this.router.all("*", AuthService.checkToken);
 
         this.router.all("/", HomeRouter.get);
