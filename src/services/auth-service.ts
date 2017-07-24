@@ -5,6 +5,8 @@ import * as passport from "passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
 
 import { FirebaseAdmin, FirebaseClient } from "../firebase";
+import { Database } from "../database";
+import { User } from "../models";
 
 dotenv.config();
 
@@ -88,21 +90,45 @@ export class AuthService {
             .auth()
             .signInWithEmailAndPassword(username, password)
             .then(data => {
-                const payload = {
-                    sub: data.uid,
-                    email: data.email,
-                };
-
-                const options = {
-                    algorithm,
-                    expiresIn: "1 day"
-                };
-
-                const token = jwt.sign(payload, secret, options);
-
+                const token = AuthService.createToken(data.uid, data.email);
                 return { token };
             });
         
         return promise as Promise<any>;
+    }
+
+    public static signup(username, password): Promise<any> {
+        if (!username || !password) {
+            const error = new Error("Username and password required.");
+            error["status"] = 400;
+            return Promise.reject(error);
+        }
+
+        const promise = FirebaseAdmin.auth.createUser({
+            email: username,
+            password,
+        }).then(data => {
+            const user = User.fromFirebaseObject(data);
+            return Database.addUser(user);
+        }).then((user: User) => {
+            const token = AuthService.createToken(user.id, user.email);
+            return { token };
+        });
+
+        return promise;
+    }
+
+    private static createToken(id, email): string {
+        const payload = {
+            sub: id,
+            email,
+        };
+
+        const options = {
+            algorithm,
+            expiresIn: "1 day"
+        };
+
+        return jwt.sign(payload, secret, options);
     }
 }

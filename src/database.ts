@@ -2,13 +2,21 @@ import * as dotenv from "dotenv";
 import * as firebase from "firebase-admin";
 
 import { FirebaseAdmin } from "./firebase";
-import { Game, Score } from "./models";
+import { Game, Score, User } from "./models";
 import { logger } from "./util/logger";
 
 dotenv.config();
 
 export class Database {
     private static db: firebase.database.Database = FirebaseAdmin.database;
+
+    public static addUser(user: User): Promise<User> {
+        const data = {
+            [user.id]: user.serialize()
+        };
+
+        return this.db.ref('users').set(data).then(() => user);
+    }
 
     public static getGame(id: string): Promise<Game> {
         return new Promise((resolve: Function, reject: Function) => {

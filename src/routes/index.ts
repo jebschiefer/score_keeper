@@ -4,8 +4,9 @@ import { AuthService } from "../services";
 import { logRoute } from "../util/logger";
 
 import { HomeRouter } from "./home";
-import { ScoresRouter } from "./scores";
 import { LoginRouter } from "./login";
+import { ScoresRouter } from "./scores";
+import { SignupRouter } from "./signup";
 
 export class Routes {
     constructor(private router: express.Router) {
@@ -20,8 +21,10 @@ export class Routes {
         this.router.get("/login", LoginRouter.get);
         this.router.post("/login", LoginRouter.post);
         this.router.get("/scores/:game", ScoresRouter.get);
+        this.router.get("/signup", SignupRouter.get);
+        this.router.post("/signup", SignupRouter.post);
 
-        this.router.post("/api/v1/login", LoginRouter.postJSON);
+        this.router.post("/api/login", LoginRouter.postJSON);
 
         this.protectedRoutes();
 
@@ -41,10 +44,6 @@ export class Routes {
             AuthService.authSuccess, 
             AuthService.authError
         );
-
-        this.router.get('/api/test', (req, res) => {
-            return res.json({ message: "success", user: req["user"] });
-        });
 
         this.router.put("/api/scores/:game", ScoresRouter.put);
     }

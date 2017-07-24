@@ -1,4 +1,8 @@
-<form method="post" action="/login">
+<h2>
+    {{#if isLogin}}Log in{{else}}Sign up{{/if}}
+</h2>
+
+<form method="post" action="{{ formAction }}">
     <div class="form-group">
         <label for="username">Username</label>
         <input id="username" name="username" type="text" class="form-control" placeholder="Enter userame">
@@ -9,5 +13,9 @@
         <input id="password" name="password" type="password" class="form-control" placeholder="Enter password">
     </div>
 
-    <button type="submit" class="btn btn-primary">Log in</button>
+    <button type="submit" class="btn btn-primary">{{#if isLogin}}Log in{{else}}Sign up{{/if}}</button>
+
+    {{#if isLogin}}
+    <a href="/signup">Sign up</a>
+    {{/if}}
 </form>

@@ -1,30 +1,30 @@
 import { AuthService } from "../services";
 
-export class LoginRouter {
+export class SignupRouter {
     public static get(req, res): void {
         if (req.session && req.session.loggedIn) {
             res.redirect("/");
         } else {
             const data = {
-                formAction: "/login",
-                isLogin: true
+                formAction: "/signup",
+                isLogin: false
             };
 
-            res.render("login", data);
+            res.render("login-signup", data);
         }
     }
 
     public static post(req, res): void {
         const username: string = req.body.username;
         const password: string = req.body.password;
-        
-        AuthService.login(username, password)
+
+        AuthService.signup(username, password)
             .then(data => {
                 req.session.jwt = data.token;
                 return res.redirect("/");
             })
             .catch(err => {
-                return res.render("login", { error: "Incorrect credentials." });
+                return res.render("login-signup", { error: err.message });
             });
     }
 
@@ -32,7 +32,7 @@ export class LoginRouter {
         const username: string = req.body.username;
         const password: string = req.body.password;
 
-        AuthService.login(username, password)
+        AuthService.signup(username, password)
             .then(data => res.json(data))
             .catch(err => res.status(err.status || 401).json({ message: err.message }));
     }
