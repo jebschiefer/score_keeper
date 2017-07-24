@@ -45,9 +45,9 @@ passport.use(new Strategy(options, (payload, next) => {
             }
 
             const user = User.fromFirebaseObject(firebaseUser);
-
-            next(null, user);
+            return Database.getUserData(user)
         })
+        .then(user => next(null, user))
         .catch(error => next(error));
 }));
 

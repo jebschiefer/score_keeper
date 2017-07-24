@@ -18,6 +18,25 @@ export class Database {
         return this.db.ref('users').set(data).then(() => user);
     }
 
+    public static getUserData(user: User): Promise<User> {
+        return new Promise((resolve: Function, reject: Function) => {
+            this.db.ref(`users/${user.id}`).once(
+                "value",
+                (snap: firebase.database.DataSnapshot) => {
+                    const data = snap.val();
+                    user.role = data.role;
+
+                    logger.info("user: %j", user);
+
+                    resolve(user);
+                },
+                (error: any) => {
+                    reject(error);
+                }
+            )
+        });
+    }
+
     public static getGame(id: string): Promise<Game> {
         return new Promise((resolve: Function, reject: Function) => {
             this.db.ref(`games/${id}`).once(
