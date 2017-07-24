@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { Game } from "../models";
-import { Database } from "../database";
+import { Database } from "../services";
 import { logger } from "../util/logger";
 
 export class HomeRouter {

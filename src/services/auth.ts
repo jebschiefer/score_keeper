@@ -4,8 +4,7 @@ import * as jwt from "jsonwebtoken";
 import * as passport from "passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
 
-import { FirebaseAdmin, FirebaseClient } from "../firebase";
-import { Database } from "../database";
+import { Database, FirebaseAdmin, FirebaseClient } from "../services";
 import { User } from "../models";
 
 dotenv.config();
@@ -93,7 +92,7 @@ export class AuthService {
                 const token = AuthService.createToken(data.uid, data.email);
                 return { token };
             });
-        
+
         return promise as Promise<any>;
     }
 

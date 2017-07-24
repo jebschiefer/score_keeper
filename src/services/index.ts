@@ -1,1 +1,3 @@
-export * from "./auth-service";
+export * from "./auth";
+export * from "./database";
+export * from "./firebase";

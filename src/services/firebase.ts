@@ -4,19 +4,12 @@ import * as firebase from "firebase";
 
 dotenv.config();
 
-const serviceAccount = require("../config/firebase.json");
+const serviceAccount = require("../../config/firebase.json");
 
 const adminConfig = {
     credential: firebaseAdmin.credential.cert(serviceAccount),
     databaseURL: process.env.DATABASE
 };
-
-firebaseAdmin.initializeApp(adminConfig);
-
-export class FirebaseAdmin {
-    public static auth = firebaseAdmin.auth();
-    public static database = firebaseAdmin.database();
-}
 
 const clientConfig = {
     apiKey: "AIzaSyCT26uOjRcydJKNSxltEkgZ5nhRTgi2-Ro",
@@ -24,6 +17,12 @@ const clientConfig = {
     databaseURL: process.env.DATABASE
 };
 
+firebaseAdmin.initializeApp(adminConfig);
 firebase.initializeApp(clientConfig);
+
+export class FirebaseAdmin {
+    public static auth = firebaseAdmin.auth();
+    public static database = firebaseAdmin.database();
+}
 
 export const FirebaseClient = firebase;

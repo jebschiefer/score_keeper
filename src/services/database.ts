@@ -2,8 +2,8 @@ import * as dotenv from "dotenv";
 import * as firebase from "firebase-admin";
 
 import { FirebaseAdmin } from "./firebase";
-import { Game, Score, User } from "./models";
-import { logger } from "./util/logger";
+import { Game, Score, User } from "../models";
+import { logger } from "../util/logger";
 
 dotenv.config();
 
@@ -21,7 +21,7 @@ export class Database {
     public static getGame(id: string): Promise<Game> {
         return new Promise((resolve: Function, reject: Function) => {
             this.db.ref(`games/${id}`).once(
-                "value", 
+                "value",
                 (snap: firebase.database.DataSnapshot) => {
                     const game = new Game({
                         id,
@@ -42,7 +42,7 @@ export class Database {
     public static getGames(): Promise<Game[]> {
         return new Promise((resolve: Function, reject: Function) => {
             this.db.ref("games").once(
-                "value", 
+                "value",
                 (snap: firebase.database.DataSnapshot) => {
                     const data = snap.val();
                     const games = [];
@@ -72,7 +72,7 @@ export class Database {
     public static getScores(resource: string): Promise<Score[]> {
         return new Promise((resolve: any, reject: any) => {
             this.db.ref(resource).once(
-                "value", 
+                "value",
                 (snap: firebase.database.DataSnapshot) => {
                     const data = snap.val();
                     const scores = [];

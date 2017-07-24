@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 
 import { Game, Score } from "../models";
+import { Database } from "../services";
 import { logger } from "../util/logger";
-import { Database } from "../database";
 
 export class ScoresRouter {
     private static success: string;
@@ -23,10 +23,10 @@ export class ScoresRouter {
             const scores = values[1] as Score[];
 
             const data = {
-                loggedIn, 
-                scores, 
+                loggedIn,
+                scores,
                 game: game.name,
-                success: ScoresRouter.success, 
+                success: ScoresRouter.success,
                 error: ScoresRouter.error
             };
 
@@ -38,7 +38,7 @@ export class ScoresRouter {
             logger.error(error);
             res.render("scores", { game: gameId, error });
         });
-            
+
     }
 
     public static put(req: Request, res: Response): void {
