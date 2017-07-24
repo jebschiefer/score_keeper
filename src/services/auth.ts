@@ -44,10 +44,7 @@ passport.use(new Strategy(options, (payload, next) => {
                 return next(null, false);
             }
 
-            const user = {
-                id: firebaseUser.uid,
-                email: firebaseUser.email
-            };
+            const user = User.fromFirebaseObject(firebaseUser);
 
             next(null, user);
         })
@@ -78,6 +75,23 @@ export class AuthService {
         next();
     }
 
+    public static requiresAdmin(req: Request, res: Response, next: NextFunction): Response|void {
+        const user: User = req["user"];
+
+        if (!user || !user.isAdmin()) {
+            const message = "This action requires admin privileges";
+            const status = 401;
+
+            if (req.xhr || req.path.includes("/api/")) {
+                return res.status(status).json({ message });
+            } else {
+                return res.redirect("/");
+            }
+        } else {
+            next();
+        }
+    }
+
     public static login(username, password): Promise<any> {
         if (!username || !password) {
             const error = new Error("Username and password required.");
@@ -88,8 +102,9 @@ export class AuthService {
         const promise = FirebaseClient
             .auth()
             .signInWithEmailAndPassword(username, password)
-            .then(data => {
-                const token = AuthService.createToken(data.uid, data.email);
+            .then(data => User.fromFirebaseObject(data))
+            .then((user: User) => {
+                const token = AuthService.createToken(user);
                 return { token };
             });
 
@@ -110,17 +125,18 @@ export class AuthService {
             const user = User.fromFirebaseObject(data);
             return Database.addUser(user);
         }).then((user: User) => {
-            const token = AuthService.createToken(user.id, user.email);
+            const token = AuthService.createToken(user);
             return { token };
         });
 
         return promise;
     }
 
-    private static createToken(id, email): string {
+    private static createToken(user: User): string {
         const payload = {
-            sub: id,
-            email,
+            sub: user.id,
+            email: user.email,
+            role: user.role
         };
 
         const options = {

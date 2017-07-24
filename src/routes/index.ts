@@ -39,12 +39,12 @@ export class Routes {
 
     private protectedRoutes(): void {
         this.router.all(
-            "/api/*", 
-            AuthService.passport.authenticate('jwt', { session: false, failWithError: true }), 
-            AuthService.authSuccess, 
+            "/api/*",
+            AuthService.passport.authenticate('jwt', { session: false, failWithError: true }),
+            AuthService.authSuccess,
             AuthService.authError
         );
 
-        this.router.put("/api/scores/:game", ScoresRouter.put);
+        this.router.put("/api/scores/:game", AuthService.requiresAdmin, ScoresRouter.put);
     }
 }

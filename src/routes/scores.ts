@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { Game, Score } from "../models";
+import { Game, Score, User } from "../models";
 import { Database } from "../services";
 import { logger } from "../util/logger";
 
