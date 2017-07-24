@@ -16,6 +16,7 @@ export class Routes {
     public initRoutes() {
         this.router.all("*", logRoute);
         this.router.all("*", AuthService.loggedIn);
+        this.router.all("*", AuthService.checkToken);
 
         this.router.all("/", HomeRouter.get);
         this.router.get("/login", LoginRouter.get);
@@ -38,12 +39,11 @@ export class Routes {
     }
 
     private protectedRoutes(): void {
-        this.router.all(
-            "/api/*",
-            AuthService.passport.authenticate('jwt', { session: false, failWithError: true }),
-            AuthService.authSuccess,
-            AuthService.authError
-        );
+        this.router.all("/api/*", AuthService.requiresLogin);
+
+        this.router.get('/api/test', (req, res) => {
+            return res.json({ message: "success", user: req["user"]});
+        });
 
         this.router.put("/api/scores/:game", AuthService.requiresAdmin, ScoresRouter.put);
     }

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { Game, Score } from "../models";
+import { Game, Score, User } from "../models";
 import { Database } from "../services";
 import { logger } from "../util/logger";
 
@@ -9,11 +9,13 @@ export class ScoresRouter {
     private static error: any;
 
     public static get(req: Request, res: Response): void {
-        const loggedIn: boolean = req["loggedIn"];
+        const user: User = req["user"];
         const gameId: string = req.params.game;
 
         const gamePromise = Database.getGame(gameId);
         const scoresPromise = Database.getScores(gameId);
+
+        const canUpdate = user ? user.isAdmin() : false;
 
         Promise.all([
             gamePromise,
@@ -23,7 +25,7 @@ export class ScoresRouter {
             const scores = values[1] as Score[];
 
             const data = {
-                loggedIn,
+                canUpdate,
                 scores,
                 game: game.name,
                 success: ScoresRouter.success,

@@ -1,67 +1,26 @@
 import * as dotenv from "dotenv";
 import { Request, Response, NextFunction } from "express";
 import * as jwt from "jsonwebtoken";
-import * as passport from "passport";
-import { ExtractJwt, Strategy } from "passport-jwt";
 
 import { Database, FirebaseAdmin, FirebaseClient } from "../services";
 import { User } from "../models";
+import { logger } from "../util/logger";
 
 dotenv.config();
 
 const secret = process.env.SECRET;
 const algorithm = "HS256";
 
-const sessionExtractor = (req) => {
-    let token = null;
-
-    if (req && req.session) {
-        token = req.session['jwt'];
-    }
-
-    return token;
-};
-
-const options = {
-    secretOrKey: secret,
-    jwtFromRequest: ExtractJwt.fromExtractors([
-        ExtractJwt.fromAuthHeaderWithScheme("Bearer"),
-        sessionExtractor
-    ]),
-    algorithms: [algorithm]
-};
-
-passport.use(new Strategy(options, (payload, next) => {
-    const id = payload.sub;
-
-    if (!id) {
-        return next(null, false);
-    }
-
-    FirebaseAdmin.auth.getUser(id)
-        .then(firebaseUser => {
-            if (!firebaseUser) {
-                return next(null, false);
-            }
-
-            const user = User.fromFirebaseObject(firebaseUser);
-            return Database.getUserData(user)
-        })
-        .then(user => next(null, user))
-        .catch(error => next(error));
-}));
-
 export class AuthService {
 
-    public static passport = passport;
+    public static authError(req, res, err?) {
+        let message = "Authentication required";
+        let status = 401;
 
-    public static authSuccess(req, res, next) {
-        next();
-    }
-
-    public static authError(err, req, res, next) {
-        const message = err.message || "Authentication required";
-        const status = err.status || 401;
+        if (err) {
+            message = err.message;
+            status = err.status || status;
+        }
 
         if (req.xhr || req.path.includes("/api/")) {
             return res.status(status).json({ message });
@@ -75,20 +34,52 @@ export class AuthService {
         next();
     }
 
+    public static checkToken(req: Request, res: Response, next: NextFunction) {
+        let token;
+
+        if (req.headers["x-access-token"]) {
+            token = req.headers["x-access-token"]
+        } else if (req.session && req.session['jwt']) {
+            token = req.session['jwt'];
+        }
+
+        if (!token) {
+            next();
+        } else {
+            const options = { algorithms: [algorithm] };
+
+            jwt.verify(token, secret, options, (err, decoded) => {
+                if (err) {
+                    logger.error(err);
+                } else {
+                    req["user"] = new User(decoded.sub, decoded.email, decoded.role);
+                }
+
+                next();
+            });
+        }
+    }
+
     public static requiresAdmin(req: Request, res: Response, next: NextFunction): Response|void {
         const user: User = req["user"];
 
-        if (!user || !user.isAdmin()) {
-            const message = "This action requires admin privileges";
-            const status = 401;
-
-            if (req.xhr || req.path.includes("/api/")) {
-                return res.status(status).json({ message });
-            } else {
-                return res.redirect("/");
-            }
-        } else {
+        if (user && user.isAdmin()) {
             next();
+        } else {
+            const error = new Error("This action requires admin privileges");
+            error["status"] = 401;
+
+            AuthService.authError(req, res, error);
+        }
+    }
+
+    public static requiresLogin(req: Request, res: Response, next: NextFunction): Response|void {
+        const user: User = req["user"];
+
+        if (user) {
+            return next();
+        } else {
+            return AuthService.authError(req, res);
         }
     }
 
@@ -103,6 +94,7 @@ export class AuthService {
             .auth()
             .signInWithEmailAndPassword(username, password)
             .then(data => User.fromFirebaseObject(data))
+            .then((user: User) => Database.getUserData(user))
             .then((user: User) => {
                 const token = AuthService.createToken(user);
                 return { token };
@@ -135,7 +127,8 @@ export class AuthService {
     private static createToken(user: User): string {
         const payload = {
             sub: user.id,
-            email: user.email
+            email: user.email,
+            role: user.role
         };
 
         const options = {
