@@ -17,7 +17,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch:compile": "tsc --watch",
     "watch:node": "nodemon ./dist/index.js",
-    "watch:files": "watch 'npm run copy-files' ./src/views"
+    "watch:files": "watch 'npm run copy-files' ./src/views src/public/js src/public/css"
   },
   "author": "Jeb Schiefer",
   "license": "ISC",
