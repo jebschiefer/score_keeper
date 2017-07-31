@@ -4,3 +4,9 @@
         <a href="/scores/{{id}}" class="list-group-item list-group-item-action">{{name}}</a>
     {{/each}}
 </div>
+
+ {{#if canUpdate}}
+    <div class="button-container">
+        <a href="/game/add" class="btn btn-primary">Add Game</a>
+    </div>
+ {{/if}}

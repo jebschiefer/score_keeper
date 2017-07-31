@@ -103,6 +103,14 @@ export class AuthService {
         return promise;
     }
 
+    public static userCanUpdate(user?: User): boolean {
+        if (user && user.isAdmin()) {
+            return true;
+        }
+
+        return false;
+    }
+
     private static authError(req, res, err?) {
         let message = "Authentication required";
         let status = 401;

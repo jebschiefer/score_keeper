@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { Game, Score, User } from "../models";
-import { Database } from "../services";
+import { AuthService, Database } from "../services";
 import { logger } from "../util/logger";
 
 export class ScoresRouter {
@@ -15,7 +15,7 @@ export class ScoresRouter {
         const gamePromise = Database.getGame(gameId);
         const scoresPromise = Database.getScores(gameId);
 
-        const canUpdate = user ? user.isAdmin() : false;
+        const canUpdate = AuthService.userCanUpdate(user);
 
         Promise.all([
             gamePromise,

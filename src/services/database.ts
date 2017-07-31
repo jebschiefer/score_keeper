@@ -11,11 +11,8 @@ export class Database {
     private static db: firebase.database.Database = FirebaseAdmin.database;
 
     public static addUser(user: User): Promise<User> {
-        const data = {
-            [user.id]: user.serialize()
-        };
-
-        return this.db.ref('users').set(data).then(() => user);
+        const data = user.serialize();
+        return this.db.ref(`users/${user.id}`).set(data).then(() => user);
     }
 
     public static getUserData(user: User): Promise<User> {
@@ -86,6 +83,47 @@ export class Database {
                 }
             )
         });
+    }
+
+    public static addGame(data: any): Promise<any> {
+        const game = data.game.toLowerCase();
+        const players = data.players.map(player => player.toLowerCase());
+        const winner = data.winner.toLowerCase();
+
+        const scoreData = {
+            [winner]: {
+                name: winner,
+                played: 1,
+                won: 1
+            }
+        };
+
+        players.forEach(player => {
+            scoreData[player] = {
+                name: player,
+                played: 1,
+                won: 0
+            }
+        });
+
+        const promise = Database.getGames()
+            .then((games: Game[]) => {
+                const found = games.find(g => g.id === game);
+
+                if (found) {
+                    throw new Error(`The game "${data.game}" already exists. Please update it instead.`);
+                }
+            })
+            .then(() => this.db.ref("games").update({ [game]: data.game }))
+            .then(() => this.db.ref(game).set(scoreData))
+            .then(() => {
+                return {
+                    game: data.game,
+                    scores: scoreData
+                }
+            });
+
+        return promise;
     }
 
     public static getScores(resource: string): Promise<Score[]> {

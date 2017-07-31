@@ -65,5 +65,14 @@
             var playedInput = $($(this).parent().prev().find("input")[0]);
             playedInput.attr("checked", true);
         });
+
+        $("#add-player").click(function(e) {
+            e.preventDefault();
+
+            var formGroup = $("#players-list .form-group").first().clone();
+            formGroup.find('input').val("");
+
+            $("#players-list").append(formGroup);
+        })
     });
 })();

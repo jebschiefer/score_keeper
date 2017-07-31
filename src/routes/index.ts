@@ -3,6 +3,7 @@ import * as express from "express";
 import { AuthService } from "../services";
 import { logRoute } from "../util/logger";
 
+import { GameRouter } from "./game";
 import { HomeRouter } from "./home";
 import { LoginRouter } from "./login";
 import { ScoresRouter } from "./scores";
@@ -27,6 +28,7 @@ export class Routes {
         this.router.post("/api/login", LoginRouter.postJSON);
 
         this.protectedRoutes();
+        this.adminRoutes();
 
         this.router.all("*", (req, res) => {
             res.redirect("/");
@@ -45,5 +47,12 @@ export class Routes {
         });
 
         this.router.put("/api/scores/:game", AuthService.requiresAdmin, ScoresRouter.put);
+    }
+
+    private adminRoutes() {
+        this.router.all("*", AuthService.requiresAdmin);
+
+        this.router.get("/game/add", GameRouter.get);
+        this.router.post("/game/add", GameRouter.post);
     }
 }
