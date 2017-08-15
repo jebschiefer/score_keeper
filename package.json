@@ -8,16 +8,13 @@
   },
   "main": "index.js",
   "scripts": {
-    "build": "npm run clean && npm run compile && npm run copy-files",
+    "build": "run-s clean compile copy-files",
     "clean": "rm -rf ./dist",
     "compile": "tsc",
     "copy-files": "copyfiles --up 1 'src/views/**/*' 'src/public/**/*' dist",
-    "start": "run-s compile copy-files start:watch",
-    "start:watch": "run-p -l watch:*",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "watch:compile": "tsc --watch",
-    "watch:node": "nodemon ./dist/index.js",
-    "watch:files": "watch 'npm run copy-files' ./src/views src/public/js src/public/css"
+    "start": "nodemon --watch src/ --exec ts-node src/index.ts",
+    "start:prod": "node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jeb Schiefer",
   "license": "ISC",
@@ -35,8 +32,8 @@
     "npm-run-all": "4.0.2",
     "serve-favicon": "2.4.3",
     "serve-static": "1.12.3",
+    "ts-node": "3.3.0",
     "typescript": "2.4.2",
-    "watch": "1.0.2",
     "winston": "2.3.1"
   },
   "devDependencies": {
