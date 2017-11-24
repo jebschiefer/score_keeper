@@ -27,7 +27,7 @@ export class AuthService {
         } else {
             const options = { algorithms: [algorithm] };
 
-            jwt.verify(token, secret, options, (err, decoded) => {
+            jwt.verify(token, secret, options, (err: any, decoded: any) => {
                 if (err) {
                     logger.error(err);
                 } else {
