@@ -8,13 +8,13 @@ const serviceAccount = require("../../config/firebase.json");
 
 const adminConfig = {
     credential: firebaseAdmin.credential.cert(serviceAccount),
-    databaseURL: process.env.DATABASE
+    databaseURL: process.env.FIREBASE_DATABASE
 };
 
 const clientConfig = {
-    apiKey: "AIzaSyCT26uOjRcydJKNSxltEkgZ5nhRTgi2-Ro",
-    authDomain: "games-2e358.firebaseapp.com",
-    databaseURL: process.env.DATABASE
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_DOMAIN,
+    databaseURL: process.env.FIREBASE_DATABASE
 };
 
 firebaseAdmin.initializeApp(adminConfig);
